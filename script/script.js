@@ -6,22 +6,22 @@ for (elem of data) {
 }
 
 function workerInfo(data) {
-	let root = document.querySelector('div');
-	let cardUser = document.createElement('div');
-	let pStatus = document.createElement('p');
-	let pLastname = document.createElement('p');
-	let pName = document.createElement('p');
-	let pSalary = document.createElement('p');
+	let root 		= document.querySelector('div');
+	let cardUser 	= document.createElement('div');
+	let pLastname 	= document.createElement('p');
+	let pName 		= document.createElement('p');
+	let pSalary 	= document.createElement('p');
+	let pStatus 	= document.createElement('p');
 
-	pStatus.innerHTML =`Должность: ${data.status}`;
-	pLastname.innerHTML = `Фамилия: ${data.lastname}`;
-	pName.innerHTML = `Имя: ${data.name}`;
-	pSalary.innerHTML = `Оклад: ${data.salary}`;
+	pLastname.innerText = `Фамилия: ${data.lastname}`;
+	pName.innerText 	= `Имя: ${data.name}`;
+	pSalary.innerText 	= `Оклад: ${data.salary}`;
+	pStatus.innerText 	= `Должность: ${data.status}`;
 
-	cardUser.appendChild(pStatus);
 	cardUser.appendChild(pLastname);
 	cardUser.appendChild(pName);
 	cardUser.appendChild(pSalary);
+	cardUser.appendChild(pStatus);
 	cardUser.classList.add('user')
 
 	root.appendChild(cardUser);
@@ -35,56 +35,61 @@ function workerInfo(data) {
 Зп сотрудника не должна превышать указанное значение и должна быть ближайшей, нежели у других сотрудников.
 */
 
-data.sort((a, b)=>a.salary-b.salary);
+console.log(data.sort((a, b) => a.salary - b.salary)); // Сортировка з/п сотрудников;
 
+
+// Бинарный поиск;
 function search(searchSalary, list, lastNode) {
-	const medianaIndex = Math.floor(list.length/2);
+	const medianaIndex 	= Math.floor(list.length/2);
 	const currentSalary = list[medianaIndex].salary;
 
-	const rightSide = list.slice(medianaIndex+1);
-	const leftSide = list.slice(0, medianaIndex);
+	const rightSide 	= list.slice(medianaIndex + 1);
+	const leftSide 		= list.slice(0, medianaIndex);
 
-	if (lastNode){
-		if (lastNode.salary <= searchSalary && searchSalary<currentSalary){
+	console.log('lastNode', lastNode);
+	console.log('currentSalary', list[medianaIndex]);
+
+	if (lastNode) {
+		if (lastNode.salary <= searchSalary && searchSalary < currentSalary) {
 			return lastNode;
-		}else if (lastNode.salary > searchSalary && searchSalary >= currentSalary){
+		} else if (lastNode.salary > searchSalary && searchSalary >= currentSalary) {
 			return currentSalary;
 		}
 	}
 
-	if (searchSalary > currentSalary && rightSide.length !== 0){
+	if (searchSalary > currentSalary && rightSide.length !== 0) {
 		return search(searchSalary, rightSide, list[medianaIndex])
 	}else if (searchSalary < currentSalary) {
-		if (leftSide.length !== 0){
+		if (leftSide.length !== 0) {
 			return search(searchSalary, leftSide, list[medianaIndex])
-		}else{
+		}else {
 			return lastNode;
 		}
 	}
 }
-console.log(search(100000, data));
+
+
 
 
 // вывод результата в div.root_2
-
 function addUser(data) {
-	let root_2 = document.querySelector('.root_2')
-	let container = document.createElement('div');
-	let cardUser = document.createElement('div');
-	let pStatus = document.createElement('p');
-	let pLastname = document.createElement('p');
-	let pName = document.createElement('p');
-	let pSalary = document.createElement('p');
+	let root_2 		= document.querySelector('.root_2');
+	let container 	= document.createElement('div');
+	let cardUser 	= document.createElement('div');
+	let pLastname 	= document.createElement('p');
+	let pName 		= document.createElement('p');
+	let pSalary 	= document.createElement('p');
+	let pStatus 	= document.createElement('p');
 
-	pStatus.innerText = `Должность: ${data.status}`;
 	pLastname.innerText = `Фамилия: ${data.lastname}`;
-	pName.innerText = `Имя: ${data.name}`;
-	pSalary.innerText = `Оклад: ${data.salary}`;
+	pName.innerText 	= `Имя: ${data.name}`;
+	pSalary.innerText 	= `Оклад: ${data.salary}`;
+	pStatus.innerText 	= `Должность: ${data.status}`;
 
-	cardUser.appendChild(pStatus);
 	cardUser.appendChild(pLastname);
 	cardUser.appendChild(pName);
 	cardUser.appendChild(pSalary);
+	cardUser.appendChild(pStatus);
 	cardUser.classList.add('model')
 
 	container.appendChild(cardUser);
@@ -92,26 +97,23 @@ function addUser(data) {
 
 	root_2.appendChild(container);
 
-
-	container.addEventListener('click', function(){
+	container.addEventListener('click', function () {
 		container.remove(container);
-	  })
+	})
 
-	  cardUser.addEventListener('click', function(event){
+	cardUser.addEventListener('click', function (event) {
 		event.stopPropagation();
-	  })
-	//   return container;
+	})
 }
 
-
-// Обработчик события;
 let clickForm = document.querySelector('form');
 
-clickForm.addEventListener('submit', function(event){
+// Обработчик события;
+clickForm.addEventListener('submit', function (event) {
 	event.preventDefault();
 	let num = document.querySelector('input').value;
-	console.log(num);
 
-	search(num, data);
+	let searchResult = search(num, data);
 
+	addUser(searchResult);
 })

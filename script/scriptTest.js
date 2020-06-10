@@ -2,7 +2,7 @@
 let elem;
 for (elem of data) {
 	workerInfo(elem)
-	// console.log(elem);
+	console.log(elem);
 }
 
 function workerInfo(data) {
@@ -35,34 +35,46 @@ function workerInfo(data) {
 Зп сотрудника не должна превышать указанное значение и должна быть ближайшей, нежели у других сотрудников.
 */
 
-data.sort((a, b)=>a.salary-b.salary);
-
-function search(searchSalary, list, lastNode) {
-	const medianaIndex = Math.floor(list.length/2);
-	const currentSalary = list[medianaIndex].salary;
-
-	const rightSide = list.slice(medianaIndex+1);
-	const leftSide = list.slice(0, medianaIndex);
-
-	if (lastNode){
-		if (lastNode.salary <= searchSalary && searchSalary<currentSalary){
-			return lastNode;
-		}else if (lastNode.salary > searchSalary && searchSalary >= currentSalary){
-			return currentSalary;
-		}
+let arrSalary = [];
+for (let i = 0; i < data.length; i++) {
+	arrSalary.push(+data[i].salary);// Считали з/п всех сотрудников в массив arrSalary;
 	}
 
-	if (searchSalary > currentSalary && rightSide.length !== 0){
-		return search(searchSalary, rightSide, list[medianaIndex])
-	}else if (searchSalary < currentSalary) {
-		if (leftSide.length !== 0){
-			return search(searchSalary, leftSide, list[medianaIndex])
-		}else{
-			return lastNode;
+// В новый sortedList массив отсортировали arrSalary;
+let sortedList = arrSalary.sort(function(cur, next){
+    if (cur === next) {
+        return 0
+    }else if (cur > next) {
+         return 1
+    }else{
+        return -1
+    }
+});
+console.log(sortedList);
+
+function searchIndex(a) { // находим index элемента
+	for (let i = 0; i < arrSalary.length; i++) {
+		if (arrSalary[i] === a){
+			return i;
 		}
 	}
 }
-console.log(search(100000, data));
+
+// Бинарный Поиск
+
+function search(n, li = sortedList) {
+	let index = Math.floor(li.length/2);
+	let mediana = li[index];
+	console.log(`${mediana}=>${li}`);
+
+	if (n === mediana) {
+		return searchIndex(n);
+	}else if (n > mediana) {
+		return search(n, li.slice(index+1));
+	}else if (n < mediana) {
+		return search(n, li.slice(0, index));
+	}
+}
 
 
 // вывод результата в div.root_2
@@ -100,7 +112,7 @@ function addUser(data) {
 	  cardUser.addEventListener('click', function(event){
 		event.stopPropagation();
 	  })
-	//   return container;
+	  return container;
 }
 
 
@@ -112,6 +124,6 @@ clickForm.addEventListener('submit', function(event){
 	let num = document.querySelector('input').value;
 	console.log(num);
 
-	search(num, data);
-
+	search(num); // ???
+	
 })
